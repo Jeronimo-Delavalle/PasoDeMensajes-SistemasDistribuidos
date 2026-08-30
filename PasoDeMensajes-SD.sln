@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryService", "src\Inv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "src\OrderService\OrderService.csproj", "{44E65E28-1902-4C59-BCD8-7F6A4C16EF0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService", "src\NotificationService\NotificationService.csproj", "{72A9B977-5177-4ABD-BCF9-42F12694AC55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,18 @@ Global
 		{44E65E28-1902-4C59-BCD8-7F6A4C16EF0E}.Release|x64.Build.0 = Release|Any CPU
 		{44E65E28-1902-4C59-BCD8-7F6A4C16EF0E}.Release|x86.ActiveCfg = Release|Any CPU
 		{44E65E28-1902-4C59-BCD8-7F6A4C16EF0E}.Release|x86.Build.0 = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|x64.Build.0 = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Debug|x86.Build.0 = Debug|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|x64.ActiveCfg = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|x64.Build.0 = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|x86.ActiveCfg = Release|Any CPU
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CFDA7CC9-E776-49DE-9F09-302D470EB235} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{44E65E28-1902-4C59-BCD8-7F6A4C16EF0E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{72A9B977-5177-4ABD-BCF9-42F12694AC55} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

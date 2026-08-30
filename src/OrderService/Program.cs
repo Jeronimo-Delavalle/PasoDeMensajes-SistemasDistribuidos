@@ -13,6 +13,8 @@ builder.Services.AddHttpClient<IInventoryClientService, HttpInventoryClientServi
     client.Timeout = TimeSpan.FromSeconds(5);
 });
 
+builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
+
 var app = builder.Build();
 
 app.MapControllers();
