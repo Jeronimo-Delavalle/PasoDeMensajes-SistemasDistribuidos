@@ -3,7 +3,7 @@
     using Microsoft.AspNetCore.Mvc;
     using OrderService.Models;
     using OrderService.Services;
-    using RabbitMQ.Client;
+   
 
 
     [ApiController]
@@ -12,11 +12,13 @@
     {
         private readonly IInventoryClientService _inventoryClient;
         private readonly IRabbitMqPublisherService _rabbitMqPublisher;
+        private readonly IKafkaProducerService _kafkaProducer;
 
-        public OrdersController(IInventoryClientService inventoryClient, IRabbitMqPublisherService rabbitMqPublisherService)
+        public OrdersController(IInventoryClientService inventoryClient, IRabbitMqPublisherService rabbitMqPublisherService, IKafkaProducerService kafkaProducer)
         {
             _inventoryClient = inventoryClient;
             _rabbitMqPublisher = rabbitMqPublisherService;
+            _kafkaProducer = kafkaProducer;
         }
 
         [HttpPost]
@@ -43,6 +45,13 @@
             return Ok(new OrderResponse(request.OrderId, "CONFIRMED", "Pedido validado y confirmado síncronamente vía REST."));
 
            
+        }
+       
+        [HttpPut("{orderId}/status")]
+        public async Task<IActionResult> UpdateStatus(string orderId, [FromBody] OrderStatusUpdateRequest request)
+        {
+            await _kafkaProducer.PublishLifecycleEventAsync($"ORDER_{request.Status.ToUpper()}", orderId, new { Status = request.Status });
+            return Ok(new { orderId, newStatus = request.Status, message = "Estado publicado en Kafka." });
         }
     }
 }

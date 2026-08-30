@@ -1,5 +1,6 @@
 using OrderService.Services;
 using OrderService.Services.Implementations;
+using OrdersService.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddHttpClient<IInventoryClientService, HttpInventoryClientServi
 });
 
 builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
+
+builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
 
 var app = builder.Build();
 

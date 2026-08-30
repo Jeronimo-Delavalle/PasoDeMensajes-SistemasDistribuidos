@@ -5,4 +5,5 @@
     public record OrderResponse(string OrderId, string Status, string Message);
 
     public record InventoryCheckDto(string ProductId, int Stock, bool IsAvailable);
+    public record OrderStatusUpdateRequest(string Status);
 }
