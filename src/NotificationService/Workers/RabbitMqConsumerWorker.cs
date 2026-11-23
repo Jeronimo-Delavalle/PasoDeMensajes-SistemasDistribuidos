@@ -13,7 +13,10 @@ public class RabbitMqConsumerWorker : BackgroundService
     private readonly string _hostname;
     private const string QueueName = "order_notifications";
 
-    public RabbitMqConsumerWorker(ILogger<RabbitMqConsumerWorker> logger, IEmailService emailService, IConfiguration config)
+    public RabbitMqConsumerWorker(
+        ILogger<RabbitMqConsumerWorker> logger,
+        IEmailService emailService,
+        IConfiguration config)
     {
         _logger = logger;
         _emailService = emailService;
@@ -23,6 +26,7 @@ public class RabbitMqConsumerWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("[RabbitMQ Worker] Conectando a {Host}...", _hostname);
+
         IConnection? connection = null;
         IModel? channel = null;
 
@@ -30,7 +34,11 @@ public class RabbitMqConsumerWorker : BackgroundService
         {
             try
             {
-                var factory = new ConnectionFactory { HostName = _hostname, DispatchConsumersAsync = true };
+                var factory = new ConnectionFactory
+                {
+                    HostName = _hostname,
+                    DispatchConsumersAsync = true
+                };
                 connection = factory.CreateConnection();
                 channel = connection.CreateModel();
             }
@@ -41,33 +49,51 @@ public class RabbitMqConsumerWorker : BackgroundService
             }
         }
 
-        if (channel == null) return;
+        if (channel == null)
+            return;
 
-        channel.QueueDeclare(queue: QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-        channel.BasicQos(0, 1, false);
+        var activeChannel = channel;
 
-        var consumer = new AsyncEventingBasicConsumer(channel);
+        activeChannel.QueueDeclare(
+            queue: QueueName,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments: null);
+
+        activeChannel.BasicQos(0, 1, false);
+
+        var consumer = new AsyncEventingBasicConsumer(activeChannel);
         consumer.Received += async (model, ea) =>
         {
             var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-            _logger.LogInformation("\n[📨 RabbitMQ Recibido] {Message}", message);
+            _logger.LogInformation("[RabbitMQ] Mensaje recibido: {Message}", message);
 
-            using var doc = JsonDocument.Parse(message);
-            var email = doc.RootElement.GetProperty("CustomerEmail").GetString() ?? "";
-            var orderId = doc.RootElement.GetProperty("OrderId").GetString() ?? "";
+            try
+            {
+                using var doc = JsonDocument.Parse(message);
+                var email = doc.RootElement.GetProperty("CustomerEmail").GetString() ?? "";
+                var orderId = doc.RootElement.GetProperty("OrderId").GetString() ?? "";
 
-            await _emailService.SendOrderConfirmationEmailAsync(email, orderId);
+                await _emailService.SendOrderConfirmationEmailAsync(email, orderId);
 
-            // ACK manual
-            channel.BasicAck(ea.DeliveryTag, multiple: false);
+                // ACK manual: el mensaje se borra recién cuando el correo fue procesado.
+                activeChannel.BasicAck(ea.DeliveryTag, multiple: false);
+            }
+            catch (Exception ex)
+            {
+                // Sin DLQ: se descarta el mensaje para no bloquear la cola.
+                _logger.LogError(ex, "[RabbitMQ] Error al procesar el mensaje. Se descarta.");
+                activeChannel.BasicNack(ea.DeliveryTag, multiple: false, requeue: false);
+            }
         };
 
-        channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
+        activeChannel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
 
         while (!stoppingToken.IsCancellationRequested)
             await Task.Delay(1000, stoppingToken);
 
-        channel.Close();
+        activeChannel.Close();
         connection?.Close();
     }
 }

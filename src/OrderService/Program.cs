@@ -1,12 +1,11 @@
 using OrderService.Services;
 using OrderService.Services.Implementations;
-using OrdersService.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Configuración de Typed HttpClient para InventoryService
+// ConfiguraciÃ³n de Typed HttpClient para InventoryService
 var inventoryUrl = builder.Configuration["INVENTORY_SERVICE_URL"] ?? "http://localhost:5001";
 builder.Services.AddHttpClient<IInventoryClientService, HttpInventoryClientService>(client =>
 {
@@ -15,7 +14,6 @@ builder.Services.AddHttpClient<IInventoryClientService, HttpInventoryClientServi
 });
 
 builder.Services.AddScoped<IRabbitMqPublisherService, RabbitMqPublisherService>();
-
 builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
 
 var app = builder.Build();

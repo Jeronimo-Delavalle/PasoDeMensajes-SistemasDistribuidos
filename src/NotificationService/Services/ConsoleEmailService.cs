@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NotificationService.Services
+﻿namespace NotificationService.Services
 {
     public class ConsoleEmailService : IEmailService
     {
@@ -14,9 +8,26 @@ namespace NotificationService.Services
 
         public async Task SendOrderConfirmationEmailAsync(string email, string orderId)
         {
-            _logger.LogInformation(" -> [EmailService] Enviando confirmación de pedido '{OrderId}' a '{Email}'...", orderId, email);
+            _logger.LogInformation(
+                " -> [EmailService] Enviando confirmación de pedido '{OrderId}' a '{Email}'...",
+                orderId,
+                email);
+
             await Task.Delay(1000); // Simulación de I/O de red
-            _logger.LogInformation(" -> [EmailService] ✅ Correo enviado exitosamente.");
+
+            _logger.LogInformation(" -> [EmailService] Correo enviado exitosamente.");
+        }
+
+        public async Task SendOrderStatusNotificationAsync(string orderId, string status)
+        {
+            _logger.LogInformation(
+                " -> [EmailService] Notificando cambio de estado '{Status}' del pedido '{OrderId}'...",
+                status,
+                orderId);
+
+            await Task.Delay(500); // Simulación de I/O de red
+
+            _logger.LogInformation(" -> [EmailService] Aviso de estado enviado exitosamente.");
         }
     }
 }

@@ -5,6 +5,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddSingleton<IEmailService, ConsoleEmailService>();
 builder.Services.AddHostedService<RabbitMqConsumerWorker>();
+builder.Services.AddHostedService<KafkaNotificationWorker>();
 
 var host = builder.Build();
 host.Run();

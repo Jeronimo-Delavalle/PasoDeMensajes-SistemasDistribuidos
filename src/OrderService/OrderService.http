@@ -1,6 +1,22 @@
 @OrderService_HostAddress = http://localhost:5223
 
-GET {{OrderService_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{OrderService_HostAddress}}/orders
+Content-Type: application/json
+
+{
+  "orderId": "ord-http-1",
+  "productId": "prod-1",
+  "quantity": 2,
+  "customerEmail": "ana@example.com"
+}
+
+###
+
+PUT {{OrderService_HostAddress}}/orders/ord-http-1/status
+Content-Type: application/json
+
+{
+  "status": "shipped"
+}
 
 ###
